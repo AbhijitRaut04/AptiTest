@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Question from './question.models.js';
 
 const { Schema, model } = mongoose;
 
@@ -13,17 +14,22 @@ const TestSchema = new Schema({
     trim: true,
   },
   duration: {
-    type: Number,
-    required: true, // Duration in minutes
+    type: String,
+    required: true, 
   },
-  isActive: {
-    type: Boolean,
-    default: true, // Determines if the test is currently active
+  scheduledAt: {
+    type: Date,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['completed', 'upcoming', 'started'],
+    default: 'upcoming',
   },
   questions: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Question', // Reference to the Question model
+      ref: Question, // Reference to the Question model
     },
   ],
   attendedUsers: [

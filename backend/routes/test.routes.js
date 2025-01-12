@@ -1,5 +1,6 @@
 import express from 'express';
 import { createTest, getAllTests, getTestById, updateTest, deleteTest, addUserToTest, submitScore } from '../controllers/test.controllers.js';
+import isUserSignin from '../middlewares/user.middlewares.js';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.put('/:id', updateTest); // Update a test
 router.delete('/:id', deleteTest); // Delete a test
 
 // Additional routes for test participants and scores
-router.post('/:id/attend', addUserToTest); // Add user to attended list
+router.post('/:id/attend', isUserSignin, addUserToTest); // Add user to attended list
 router.post('/:id/submit-score', submitScore); // Submit user's score
 
 export default router;

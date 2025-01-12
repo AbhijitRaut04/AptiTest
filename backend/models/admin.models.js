@@ -18,8 +18,8 @@ const AdminSchema = new Schema({
     required: true,
     unique: true,
     match: [
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-      'Please enter a valid email address',
+      // /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      // 'Please enter a valid email address',
     ],
   },
   profilePicture: {
@@ -36,7 +36,7 @@ const AdminSchema = new Schema({
     type: String,
     required: true,
     enum: ['CSE', 'IT', 'EXTC'],
-    default: 'IT',
+    default: 'CSE',
   },
 }, {
   timestamps: true,

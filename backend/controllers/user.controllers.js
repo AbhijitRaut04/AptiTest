@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/user.models.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 // 1. Register a new User
 export const registerUser = async (req, res) => {
-  const { email, registrationNumber, password, department, year, idProof } = req.body;
+  const { email, registrationNumber, password, department, year, profilePicture, idProof } = req.body;
 
   try {
     // Check if user already exists
@@ -25,7 +25,8 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
       department,
       year,
-      idProof,
+      profilePicture,
+      idProof
     });
 
     await newUser.save();
@@ -54,6 +55,7 @@ export const loginUser = async (req, res) => {
 
     // Generate a token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.cookie("token", token)
 
     res.status(200).json({
       message: 'Login successful',
@@ -73,7 +75,17 @@ export const loginUser = async (req, res) => {
 // 3. Get all Users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password'); // Exclude passwords
+    const users = await User.find().select('-password')
+    .populate({
+      path: "attendedTests", 
+      populate: {
+        path: 'questions',
+        populate:{
+          path: 'question',  
+          select: '-createdAt -updatedAt',  
+        }
+      },
+    }); 
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -83,12 +95,12 @@ export const getAllUsers = async (req, res) => {
 // 4. Update User Profile
 export const updateUserProfile = async (req, res) => {
   const { id } = req.params;
-  const { email, department, year, profilePicture, accountStatus } = req.body;
+  const { email, registrationNumber, department, year, profilePicture, idProof } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { email, department, year, profilePicture, accountStatus },
+      { email, department, year, profilePicture, registrationNumber, idProof },
       { new: true, runValidators: true }
     );
 

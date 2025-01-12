@@ -10,7 +10,7 @@ const QuestionSchema = new Schema({
   },
   images: [
     {
-      type: String, // URLs for images related to the question
+      type: String, 
     },
   ],
   difficulty: {
@@ -21,12 +21,12 @@ const QuestionSchema = new Schema({
   options: [
     {
       type: String,
-      required: true, // Each option is a string
+      required: true, 
     },
   ],
   correctAnswer: {
     type: String,
-    required: true, // The correct answer matches one of the options
+    required: true, 
   },
   points: {
     type: Number,

@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 // 1. Register a new Admin
 export const registerAdmin = async (req, res) => {
-  const { username, password, email, department } = req.body;
+  const { username, password, email, department, profilePicture } = req.body;
 
   try {
     // Check if admin already exists
@@ -24,6 +24,7 @@ export const registerAdmin = async (req, res) => {
       password: hashedPassword,
       email,
       department,
+      profilePicture
     });
 
     await newAdmin.save();
@@ -52,6 +53,7 @@ export const loginAdmin = async (req, res) => {
 
     // Generate a token
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.cookie("token", token)
 
     res.status(200).json({
       message: 'Login successful',
@@ -71,7 +73,15 @@ export const loginAdmin = async (req, res) => {
 // 3. Get all Admins
 export const getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find().select('-password'); // Exclude passwords
+    const admins = await Admin.find()
+      .select('-password')
+      .populate({
+        path: "tests",
+        populate: {
+          path: 'attendedUsers rankings.user questions',
+          select: '-password -attendedTests',
+        }
+      })
     res.status(200).json(admins);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

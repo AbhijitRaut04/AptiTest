@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import AttemptedTest from './attemptedtest.models.js';
 
 const { Schema, model } = mongoose;
 
@@ -9,8 +10,8 @@ const UserSchema = new Schema({
     unique: true,
     trim: true,
     match: [
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, // Regex for email validation
-      'Please enter a valid email address',
+      // /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, // Regex for email validation
+      // 'Please enter a valid email address',
     ],
   },
   registrationNumber: {
@@ -26,7 +27,7 @@ const UserSchema = new Schema({
   attendedTests: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Test', // Reference to the Test model
+      ref: AttemptedTest, // Reference to the Test model
     },
   ],
   department: {
